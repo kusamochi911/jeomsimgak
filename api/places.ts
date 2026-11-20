@@ -23,7 +23,7 @@ interface KakaoDoc {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const q = String(req.query.q ?? '').trim().slice(0, 40)
   if (!q) return res.status(400).json({ error: 'q is required' })
-  const key = process.env.KAKAO_REST_API_KEY
+  const key = process.env.KAKAO_REST_API_KEY?.trim()
   if (!key) return res.status(503).json({ error: 'KAKAO_REST_API_KEY is not set' })
 
   const params = new URLSearchParams({ query: q, category_group_code: 'FD6', size: '10' })

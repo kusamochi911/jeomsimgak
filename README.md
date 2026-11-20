@@ -54,7 +54,7 @@ npm run dev
 
 ### 2. 카카오 개발자 (공유 + 식당 검색)
 1. developers.kakao.com에서 애플리케이션 생성
-2. 플랫폼 > Web에 배포 도메인 등록 (예: `https://jeomsimgak.vercel.app`, 개발용 `http://localhost:5173`)
+2. 플랫폼 > Web에 배포 도메인 등록 (예: `https://jeomsimgak-pick.vercel.app`, 개발용 `http://localhost:5173`)
 3. JavaScript 키 → `VITE_KAKAO_JS_KEY` (카카오톡 공유)
 4. REST API 키 → `KAKAO_REST_API_KEY` (Vercel 환경 변수에만 등록, 근처 식당 검색)
 5. `src/lib/share.ts`의 SDK 주소를 카카오 문서의 최신 버전과 integrity 값으로 맞추기
