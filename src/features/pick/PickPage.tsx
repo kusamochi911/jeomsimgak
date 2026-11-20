@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AdSlot, useUI } from '../../components/ui'
+import { useUI } from '../../components/ui'
 import { MENUS, menuByName } from '../../data/menus'
 import { PRICE_RANGES, type Menu } from '../../data/types'
-import { showRewardedAd } from '../../lib/ads'
-import { config } from '../../lib/config'
 import { todayKey } from '../../lib/date'
 import { filterMenus, pickRandom, placeQuery, priceLabel, type Skip } from '../../lib/pick'
 import { navigate } from '../../lib/router'
@@ -13,7 +11,6 @@ import { useData } from '../../state/data'
 import { DEFAULT_FILTERS, Filters, summarize, type FilterState } from './Filters'
 import { NearbyPlaces } from './NearbyPlaces'
 
-const FREE = config.freePicksPerDay
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function useDaily<T extends { day: string }>(key: string, make: (day: string) => T) {
@@ -28,7 +25,6 @@ export function PickPage() {
   const { recent, addRecent, logEat, setDraftCands } = useData()
   const [filters, setFilters] = usePersistentState<FilterState>('filters', DEFAULT_FILTERS)
   const [open, setOpen] = usePersistentState('filtersOpen', false)
-  const [quota, setQuota] = useDaily('quota', (day) => ({ day, left: FREE }))
   const [skip, setSkip] = useDaily<Skip>('skip', (day) => ({ day, names: [], cats: [] }))
   const [orderNo, setOrderNo] = usePersistentState('orderNo', 1)
   const [current, setCurrent] = useState<Menu>(() => menuByName(recent[0]?.n) ?? MENUS[0])
@@ -49,13 +45,11 @@ export function PickPage() {
     [filters, skip, recent],
   )
 
-  function pick(free: boolean, from = pool) {
+  function pick(from = pool) {
     if (rolling) return
-    if (!free && quota.left <= 0) return openAd()
     const choice = pickRandom(from)
     if (!choice) return setEmpty(true)
     setEmpty(false)
-    if (!free) setQuota({ ...quota, left: quota.left - 1 })
     setOrderNo(orderNo + 1)
     const finish = () => {
       setShown(choice)
@@ -75,35 +69,6 @@ export function PickPage() {
     tick()
   }
 
-  function openAd() {
-    function AdBody() {
-      const [left, setLeft] = useState<number | null>(null)
-      return (
-        <>
-          <div className="res-kicker">REWARDED AD</div>
-          <h2 className="res-title">오늘 무료 뽑기를<br />다 썼어요</h2>
-          <p className="res-body">짧은 광고를 보면 {FREE}번 더 뽑을 수 있어요. '이거 말고'는 횟수와 상관없이 쓸 수 있어요.</p>
-          <div className="adbox">
-            {left == null ? (
-              <span>광고 영상 자리<br />(출시 전 광고 SDK 연동)</span>
-            ) : (
-              <span><b>{left}</b>광고 재생 중</span>
-            )}
-          </div>
-          <button type="button" className="btn-main sm" disabled={left != null} onClick={async () => {
-            const ok = await showRewardedAd(setLeft)
-            closeSheet()
-            if (ok) {
-              setQuota((q) => ({ day: todayKey(), left: (q.day === todayKey() ? q.left : 0) + FREE }))
-              toast(`뽑기 ${FREE}회가 충전됐어요`)
-            }
-          }}>광고 보고 {FREE}회 받기</button>
-        </>
-      )
-    }
-    openSheet({ content: <AdBody />, actions: [{ label: '닫기', onClick: closeSheet }] })
-  }
-
   function notThis() {
     if (rolling) return
     const m = current
@@ -116,14 +81,14 @@ export function PickPage() {
         next,
         filters.noRepeat ? recent.slice(0, 3).map((r) => r.n) : [],
       )
-      pick(true, nextPool)
+      pick(nextPool)
     }
     openSheet({
       content: (
         <>
           <div className="res-kicker">NOT THIS</div>
           <h2 className="res-title" style={{ fontSize: 26 }}>{m.name} 말고<br />뭐로 할까요?</h2>
-          <p className="res-body">오늘 하루만 빼고 바로 다시 뽑아요. 무료 횟수는 줄지 않고, 내일이면 다시 나와요.</p>
+          <p className="res-body">오늘 하루만 빼고 바로 다시 뽑아요. 내일이면 다시 나와요.</p>
         </>
       ),
       actions: [
@@ -199,8 +164,8 @@ export function PickPage() {
 
       <div className="pickrow">
         <button type="button" className="btn-ghost" onClick={notThis} disabled={empty}>이거 말고</button>
-        <button type="button" className="btn-main" onClick={() => pick(false)}>
-          메뉴 뽑기 <span className="left">{quota.left > 0 ? `무료 ${quota.left}회` : '광고 보고 충전'}</span>
+        <button type="button" className="btn-main" onClick={() => pick()}>
+          메뉴 뽑기
         </button>
       </div>
       {!empty && (
@@ -210,8 +175,6 @@ export function PickPage() {
       )}
 
       {!empty && <NearbyPlaces key={`${current.name}|${filters.area ?? ''}`} menu={current} area={filters.area} />}
-
-      <AdSlot />
 
       <div>
         <div className="row-between"><h3 className="sec-title">최근 뽑은 메뉴</h3><span className="hint">이 기기에만 저장</span></div>

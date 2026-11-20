@@ -108,15 +108,3 @@ export function Chip({ pressed, onClick, children, label, disabled, title }: {
     </button>
   )
 }
-
-export function AdSlot() {
-  return (
-    <div className="adslot" aria-label="광고 영역">
-      <span>
-        <b>광고 배너 자리</b>
-        <br />
-        320×50 · 출시 전 광고 SDK 연동
-      </span>
-    </div>
-  )
-}
