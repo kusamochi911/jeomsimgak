@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, type ReactNode } from 'react'
 import type { Category, Menu } from '../data/types'
 import { todayKey } from '../lib/date'
 import { priceMid } from '../lib/pick'
@@ -55,7 +55,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [eats, setEats] = usePersistentState<EatLog[]>('eats', [])
   const [pays, setPays] = usePersistentState<PayLog[]>('pays', [])
   const [recent, setRecent] = usePersistentState<RecentPick[]>('recent', [])
-  const [people, setPeople] = usePersistentState<string[]>('people', ['민수', '지영', '현우', '서연'])
+  const [people, setPeople] = usePersistentState<string[]>('people', [])
+  // 예전 버전의 예시 이름(민수·지영·현우·서연)이 그대로 저장돼 있으면 한 번 비운다
+  useEffect(() => {
+    if (people.join() === '민수,지영,현우,서연') setPeople([])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [draftCands, setDraftCands] = usePersistentState<string[]>('draft', [])
   const [myRooms, setMyRooms] = usePersistentState<string[]>('myRooms', [])
   const [nickname, setNickname] = usePersistentState<string>('nick', '')

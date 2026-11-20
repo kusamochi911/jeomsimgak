@@ -55,5 +55,13 @@ create policy votes_update on public.votes for update to authenticated
   using (voter = auth.uid())
   with check (voter = auth.uid() and public.can_vote(room_id, choice));
 
+-- 테이블 접근 권한. 최근 Supabase 프로젝트는 SQL로 만든 테이블에 자동으로 권한을 주지 않으므로 명시한다.
+-- (실제로 누가 무엇을 할 수 있는지는 위 정책(RLS)이 한 번 더 거른다)
+grant usage on schema public to anon, authenticated;
+grant select on public.rooms, public.votes to anon, authenticated;
+grant insert, update, delete on public.rooms to authenticated;
+grant insert, update on public.votes to authenticated;
+grant execute on function public.can_vote(text, int) to authenticated;
+
 -- 실시간 반영
 alter publication supabase_realtime add table public.rooms, public.votes;

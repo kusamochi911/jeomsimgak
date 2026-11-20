@@ -59,18 +59,25 @@ export function GamePage() {
       <div className="card">
         <div className="row-between"><h3 className="sec-title">참가자 {people.length}명</h3><span className="hint">2~10명 · 눌러서 빼기</span></div>
         <div className="chips">
+          {people.length === 0 && <span className="hint">같이 점심 먹는 사람 이름을 추가해 주세요.</span>}
           {people.map((p) => (
-            <Chip key={p} label={`${p} 빼기`} onClick={() => people.length <= 2 ? toast('최소 2명은 있어야 해요') : setPeople(people.filter((x) => x !== p))}>
+            <Chip key={p} label={`${p} 빼기`} onClick={() => setPeople(people.filter((x) => x !== p))}>
               {p}<span className="x" aria-hidden="true">✕</span>
             </Chip>
           ))}
         </div>
         <form className="addrow" onSubmit={add}>
-          <input value={name} onChange={(e) => setName(e.target.value)} maxLength={6} placeholder="이름 (최대 6자)" autoComplete="off" aria-label="참가자 이름" />
+          <input autoFocus={people.length === 0} value={name} onChange={(e) => setName(e.target.value)} maxLength={6} placeholder="이름 (최대 6자)" autoComplete="off" aria-label="참가자 이름" />
           <button type="submit">추가</button>
         </form>
       </div>
 
+      {people.length < 2 ? (
+        <div className="card stack" style={{ textAlign: 'center' }}>
+          <p className="sec-title">참가자를 {2 - people.length}명 더 추가하면 게임을 시작할 수 있어요</p>
+          <p className="hint">룰렛 · 사다리 · 폭탄 숫자 중에서 고를 수 있어요. 팀방에서 투표한 사람들로 바로 채울 수도 있어요.</p>
+        </div>
+      ) : (<>
       <div className="seg" role="tablist" aria-label="게임 선택">
         {GAMES.map(([k, l]) => (
           <button key={k} role="tab" aria-selected={game === k} onClick={() => setGame(k)}>{l}</button>
@@ -84,6 +91,7 @@ export function GamePage() {
           onSummary={(p, list) => result('LADDER', p, '전체 결과입니다.', list)} />
       )}
       {game === 'bomb' && <BombNumber key={round} people={people} onPayer={(p, n) => result('BOMB NUMBER', p, `${p} 님이 폭탄 숫자 ${n}을(를) 밟았어요.`)} />}
+      </>)}
     </section>
   )
 }
