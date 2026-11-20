@@ -20,6 +20,14 @@ const TABS = [
   { path: '/stats', label: '기록', icon: <><rect className="fill" x="4" y="11" width="4" height="9" rx="1" fill="none" /><rect x="10" y="6" width="4" height="14" rx="1" /><rect x="16" y="13" width="4" height="7" rx="1" /></> },
 ]
 
+/** 화면별 제목·설명 (검색 결과와 브라우저 탭에 표시) */
+const PAGE_META: Record<string, [string, string]> = {
+  '/': ['점심각 · 오늘 점심 뭐 먹지? 메뉴 추천', '종류·예산·상황만 고르면 오늘 점심 메뉴를 뽑아드려요. 서울 직장인 점심 가격 기준, 근처 식당까지 바로.'],
+  '/room': ['점심 메뉴 팀 투표 · 점심각', '후보 메뉴를 올리고 링크 하나로 팀원과 실시간 투표. 로그인 없이 닉네임만으로 참여해요.'],
+  '/game': ['누가 쏠까? 룰렛·사다리·폭탄 숫자 · 점심각', '점심값 낼 사람을 룰렛, 사다리타기, 폭탄 숫자 게임으로 공정하게 정해요.'],
+  '/stats': ['나의 점심 기록 · 점심각', '먹은 메뉴와 지출, 자주 먹은 메뉴를 한눈에 봐요.'],
+}
+
 /** 다음 날 처음 열면 "어제 뽑은 메뉴 드셨나요?"로 기록을 자동으로 쌓는다 */
 function useYesterdayPrompt(enabled: boolean) {
   const { recent, eats, logEat } = useData()
@@ -64,6 +72,11 @@ function Shell() {
   else if (path === '/stats') page = <StatsPage />
   else page = <PickPage />
   const current = path.startsWith('/r/') ? '/room' : TABS.some((t) => t.path === path) ? path : '/'
+  useEffect(() => {
+    const [title, desc] = PAGE_META[current] ?? PAGE_META['/']
+    document.title = title
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc)
+  }, [current])
   const d = new Date()
 
   return (

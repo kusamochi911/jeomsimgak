@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+# 팀방(개별 투표방)과 서버 함수는 검색에 노출하지 않음
+Disallow: /r/
+Disallow: /api/
+
+Sitemap: https://jeomsimgak-pick.vercel.app/sitemap.xml
