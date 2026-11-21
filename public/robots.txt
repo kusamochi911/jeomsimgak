@@ -4,4 +4,4 @@ Allow: /
 Disallow: /r/
 Disallow: /api/
 
-Sitemap: https://jeomsimgak-pick.vercel.app/sitemap.xml
+Sitemap: https://jeomsimgak.com/sitemap.xml
