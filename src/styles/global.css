@@ -104,6 +104,13 @@ canvas{display:block;max-width:100%;touch-action:manipulation}
 .b-msg.up{color:var(--leaf)} .b-msg.down{color:var(--chili)}
 
 /* plan doc */
+.site-footer{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 8px;margin-top:28px;font-size:12.5px;color:var(--muted)}
+.site-footer a{color:var(--muted);text-decoration:none}
+.site-footer a:hover{color:var(--ink);text-decoration:underline}
+.site-footer p{flex-basis:100%;text-align:center;margin:2px 0 0;font-size:11.5px}
+.doc a{color:var(--ink)}
+.tbl.plain td:first-child{font-family:inherit;font-weight:700;white-space:normal}
+.tbl.plain table{min-width:0}
 .doc{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:6px 20px 20px}
 .doc h2{font-size:17px;margin:22px 0 8px;display:flex;align-items:center;gap:8px}
 .doc h2::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--yolk)}

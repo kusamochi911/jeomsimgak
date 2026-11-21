@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { UIProvider, useUI } from './components/ui'
 import { menuByName } from './data/menus'
 import { GamePage } from './features/game/GamePage'
+import { AboutPage, PrivacyPage, SiteFooter } from './features/info/InfoPages'
 import { PickPage } from './features/pick/PickPage'
 import { RoomDetail } from './features/room/RoomDetail'
 import { RoomPage } from './features/room/RoomPage'
@@ -26,6 +27,8 @@ const PAGE_META: Record<string, [string, string]> = {
   '/room': ['점심 메뉴 팀 투표 · 점심각', '후보 메뉴를 올리고 링크 하나로 팀원과 실시간 투표. 로그인 없이 닉네임만으로 참여해요.'],
   '/game': ['누가 쏠까? 룰렛·사다리·폭탄 숫자 · 점심각', '점심값 낼 사람을 룰렛, 사다리타기, 폭탄 숫자 게임으로 공정하게 정해요.'],
   '/stats': ['나의 점심 기록 · 점심각', '먹은 메뉴와 지출, 자주 먹은 메뉴를 한눈에 봐요.'],
+  '/about': ['서비스 소개 · 점심각', '점심 메뉴 추천, 팀 투표, 누가 쏠까 게임을 제공하는 무료 웹 서비스 점심각 소개와 문의 안내.'],
+  '/privacy': ['개인정보처리방침 · 점심각', '점심각이 처리하는 정보와 목적, 보관 기간, 이용자 권리 안내.'],
 }
 
 /** 다음 날 처음 열면 "어제 뽑은 메뉴 드셨나요?"로 기록을 자동으로 쌓는다 */
@@ -70,8 +73,10 @@ function Shell() {
   else if (path === '/room') page = <RoomPage />
   else if (path === '/game') page = <GamePage />
   else if (path === '/stats') page = <StatsPage />
+  else if (path === '/about') page = <AboutPage />
+  else if (path === '/privacy') page = <PrivacyPage />
   else page = <PickPage />
-  const current = path.startsWith('/r/') ? '/room' : TABS.some((t) => t.path === path) ? path : '/'
+  const current = path.startsWith('/r/') ? '/room' : TABS.some((t) => t.path === path) || path in PAGE_META ? path : '/'
   useEffect(() => {
     const [title, desc] = PAGE_META[current] ?? PAGE_META['/']
     document.title = title
@@ -89,6 +94,7 @@ function Shell() {
           </header>
         )}
         <main>{page}</main>
+        <SiteFooter />
       </div>
       <nav className="tabs" aria-label="하단 메뉴">
         <div className="tabs-in">

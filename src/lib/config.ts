@@ -12,6 +12,8 @@ export const config = {
   supabaseUrl: read(env.VITE_SUPABASE_URL),
   supabaseKey: read(env.VITE_SUPABASE_ANON_KEY),
   kakaoJsKey: read(env.VITE_KAKAO_JS_KEY),
+  /** 서비스 소개·개인정보처리방침에 표시할 문의 이메일 */
+  contactEmail: read(env.VITE_CONTACT_EMAIL),
   /** 'toss'로 빌드하면 토스 앱 안에서 쓰는 화면(자체 헤더 숨김) */
   inToss: read(env.VITE_TARGET) === 'toss',
 }
