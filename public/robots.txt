@@ -1,7 +1,8 @@
 User-agent: *
 Allow: /
-# 팀방(개별 투표방)과 서버 함수는 검색에 노출하지 않음
 Disallow: /r/
 Disallow: /api/
 
 Sitemap: https://jeomsimgak.com/sitemap.xml
+
+#DaumWebMasterTool:763c39d4612165e63241d6c8977714a966ee5bc6761aab2e902369085dc75747:9OXzxfMP1b1VGCOsL/bJCQ==
